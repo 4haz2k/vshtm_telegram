@@ -54,24 +54,36 @@ func main() {
 
 		database.LogMessage(update.Message.Chat.ID, update.Message.Text)
 
-		var message string
-		var keyboard tgbotapi.ReplyKeyboardMarkup
+		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
 
 		switch update.Message.Text {
 		case "start":
 		case "/start":
-			message, keyboard = commands.Start()
+			message, keyboard := commands.Start()
+			msg.Text = message
+			msg.ReplyMarkup = keyboard
 			break
 		case "Подписаться":
-			message, keyboard = commands.Subscribe()
+			message, keyboard := commands.Subscribe(update.Message.Chat.ID)
+			msg.Text = message
+			msg.ReplyMarkup = keyboard
 			break
 		case "Отписаться":
-			message, keyboard = commands.Unsubscribe()
+			message, keyboard := commands.Unsubscribe(update.Message.Chat.ID)
+			msg.Text = message
+			msg.ReplyMarkup = keyboard
+			break
+		case "Расписание на неделю":
+			message := commands.Schedule()
+			msg.Text = message
+			break
+		default:
+			message := commands.UnknownMessage()
+			msg.Text = message
 			break
 		}
 
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, message)
-		msg.ReplyMarkup = keyboard
+		msg.ParseMode = "html"
 
 		if _, err := bot.Send(msg); err != nil {
 			log.Panic(err)
