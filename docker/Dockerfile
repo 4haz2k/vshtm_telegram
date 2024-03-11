@@ -1,4 +1,4 @@
-FROM golang:latest AS build-app
+FROM golang:1.21 AS build-app
 
 RUN mkdir /app
 ADD . /app/
