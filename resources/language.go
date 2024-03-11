@@ -1,9 +1,7 @@
 package resources
 
-var data map[string]string
-
 func init() {
-	data = map[string]string{
+	lang = map[string]string{
 		"subscribeLabel":         "Подписаться",
 		"unsubscribeLabel":       "Отписаться",
 		"scheduleLabel":          "Расписание на неделю",
@@ -16,12 +14,4 @@ func init() {
 		"ScheduleForWeekMessage": "Расписание на неделю:\n\n",
 		"unknownMessage":         "<b>Не знаю, что тебе ответить, поэтому, вот тебе анекдот для людей за 40:</b>\n\n%s",
 	}
-}
-
-func Lang(key string) string {
-	if name, ok := data[key]; ok {
-		return name
-	}
-
-	return key // todo: мб возвращать здесь что-то другое вместо ключа
 }

@@ -5,8 +5,10 @@ import (
 	"log"
 	"net/http"
 	"os"
+
 	"vshtm_telegram/commands"
 	"vshtm_telegram/database"
+	"vshtm_telegram/resources"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -36,7 +38,7 @@ func main() {
 	}
 
 	if info.LastErrorDate != 0 {
-		log.Printf("Telegram callback failed: %s", info.LastErrorMessage)
+		log.Printf(resources.Error("callbackFailed"), info.LastErrorMessage)
 	}
 
 	updates := bot.ListenForWebhook("/" + bot.Token)
@@ -57,23 +59,23 @@ func main() {
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
 
 		switch update.Message.Text {
-		case "start":
-		case "/start":
+		case resources.Command("startSlash"):
+		case resources.Command("start"):
 			message, keyboard := commands.Start()
 			msg.Text = message
 			msg.ReplyMarkup = keyboard
 			break
-		case "Подписаться":
+		case resources.Command("subscribe"):
 			message, keyboard := commands.Subscribe(update.Message.Chat.ID)
 			msg.Text = message
 			msg.ReplyMarkup = keyboard
 			break
-		case "Отписаться":
+		case resources.Command("unsubscribe"):
 			message, keyboard := commands.Unsubscribe(update.Message.Chat.ID)
 			msg.Text = message
 			msg.ReplyMarkup = keyboard
 			break
-		case "Расписание на неделю":
+		case resources.Command("schedule"):
 			message := commands.Schedule()
 			msg.Text = message
 			break
