@@ -47,7 +47,7 @@ func Start() (string, tgbotapi.ReplyKeyboardMarkup) {
 
 func Subscribe(chatId int64) (string, tgbotapi.ReplyKeyboardMarkup) {
 	database.SubscribeUser(chatId)
-	return resources.Lang("startMessage"), subscribeKeyboard
+	return resources.Lang("subscribedMessage"), subscribeKeyboard
 }
 
 func Unsubscribe(chatId int64) (string, tgbotapi.ReplyKeyboardMarkup) {

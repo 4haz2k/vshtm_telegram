@@ -13,7 +13,7 @@ import (
 
 func init() {
 	if err := godotenv.Load(); err != nil {
-		log.Panic("environment file not found")
+		log.Panic("Environment file not found")
 	}
 }
 

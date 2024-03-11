@@ -54,14 +54,43 @@ func LogMessage(chatId int64, message string) {
 }
 
 func SubscribeUser(chatId int64) {
-	_, err := db.Exec("INSERT INTO participants (chat_id, subscribed) VALUES (?, true) ON DUPLICATE KEY UPDATE subscribed = true;", strconv.Itoa(int(chatId)))
+	if getUserInSubscription(chatId) {
+		updateUserInSubscription(chatId, true)
+	} else {
+		insertUserInSubscription(chatId, false)
+	}
+}
+
+func UnsubscribeUser(chatId int64) {
+	if getUserInSubscription(chatId) {
+		updateUserInSubscription(chatId, false)
+	} else {
+		insertUserInSubscription(chatId, false)
+	}
+}
+
+func getUserInSubscription(chatId int64) bool {
+	rows, err := db.Query("SELECT 1 FROM participants WHERE chat_id=?;", strconv.Itoa(int(chatId)))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if rows.Next() {
+		return true
+	} else {
+		return false
+	}
+}
+
+func updateUserInSubscription(chatId int64, value bool) {
+	_, err := db.Exec("UPDATE participants SET subscribed=? WHERE chat_id=?;", value, strconv.Itoa(int(chatId)))
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func UnsubscribeUser(chatId int64) {
-	_, err := db.Exec("INSERT INTO participants (chat_id, subscribed) VALUES (?, false) ON DUPLICATE KEY UPDATE subscribed = false;", strconv.Itoa(int(chatId)))
+func insertUserInSubscription(chatId int64, value bool) {
+	_, err := db.Exec("INSERT INTO participants (chat_id, subscribed) VALUES (?, ?);", strconv.Itoa(int(chatId)), value)
 	if err != nil {
 		log.Fatal(err)
 	}
