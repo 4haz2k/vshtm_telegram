@@ -25,8 +25,11 @@ type schedule struct {
 var db *sql.DB
 
 func init() {
-	if err := godotenv.Load(); err != nil {
-		log.Panic("environment file not found")
+	if os.Getenv("APP_ENV") != "prod" {
+		err := godotenv.Load()
+		if err != nil {
+			log.Panic("environment file not found")
+		}
 	}
 
 	cfg := mysql.Config{

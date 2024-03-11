@@ -15,4 +15,3 @@ COPY --from=build-app /app/main /opt/main
 COPY --from=build-app /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 ENTRYPOINT ["/opt/main"]
-
