@@ -9,7 +9,7 @@ import (
 	"vshtm_telegram/database"
 	"vshtm_telegram/resources"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 func main() {
@@ -18,7 +18,7 @@ func main() {
 		log.Panic(err)
 	}
 
-	wh, _ := tgbotapi.NewWebhook(os.Getenv("TELEGRAM_WEBHOOK_URL"))
+	wh, _ := tgbotapi.NewWebhookWithCert(os.Getenv("TELEGRAM_WEBHOOK_URL"), tgbotapi.FilePath("cert/public.pem"))
 
 	_, err = bot.Request(wh)
 	if err != nil {
@@ -36,7 +36,7 @@ func main() {
 
 	updates := bot.ListenForWebhook("/" + bot.Token)
 	go func() {
-		err := http.ListenAndServe("0.0.0.0:8443", nil)
+		err := http.ListenAndServeTLS("0.0.0.0:8443", "cert/public.pem", "cert/private.pem", nil)
 		if err != nil {
 			log.Panic(err)
 		}
